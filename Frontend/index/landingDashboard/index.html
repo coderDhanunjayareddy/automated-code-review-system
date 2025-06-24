@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Code Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-code {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: float 20s infinite linear;
+            user-select: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-color: transparent;
+        }
+
+        .nav-btn.primary:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 30px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+            transform: scale(0);
+            animation: scaleIn 0.8s ease-out 0.6s forwards;
+        }
+
+        @keyframes scaleIn {
+            to { transform: scale(1); }
+        }
+
+        .hero-logo::before {
+            content: '</>';
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 18px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-btn.primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .hero-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .hero-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .features-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #6366f1;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 20px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .feature-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 0;
+            color: white;
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .services-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .services-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .service-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .service-description {
+            opacity: 0.8;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .service-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .service-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 40px 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            color: white;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #8b5cf6;
+        }
+
+        .footer-text {
+            opacity: 0.8;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .features,
+            .services {
+                padding: 60px 0;
+            }
+
+            .hero-btn,
+            .nav-btn {
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="floating-code" style="left: 10%; animation-delay: 0s;">public class Review {</div>
+        <div class="floating-code" style="left: 20%; animation-delay: 2s;">if (code.isValid()) {</div>
+        <div class="floating-code" style="left: 30%; animation-delay: 4s;">}</div>
+        <div class="floating-code" style="left: 40%; animation-delay: 6s;">@Override</div>
+        <div class="floating-code" style="left: 50%; animation-delay: 8s;">String analyze() {</div>
+        <div class="floating-code" style="left: 60%; animation-delay: 10s;">return "Clean Code";</div>
+        <div class="floating-code" style="left: 70%; animation-delay: 12s;">}</div>
+        <div class="floating-code" style="left: 80%; animation-delay: 14s;">// PMD Analysis</div>
+        <div class="floating-code" style="left: 90%; animation-delay: 16s;">System.out.println();</div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo-header">
+                    <div class="logo-icon">🔬</div>
+                    <div class="logo-text">Code Review</div>
+                </div>
+                <div class="nav-buttons">
+                    <a href="/index/sign_in/sign_in.html" class="nav-btn">Login</a>
+                    <a href="/index/signup/signup.html" class="nav-btn primary">Sign Up</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-logo"></div>
+                    <h1 class="hero-title">Automated Code Review System</h1>
+                    <p class="hero-subtitle">
+                        Submit your Java code snippets, files, or entire projects for comprehensive static analysis using PMD. 
+                        Get detailed reports, suggestions, and improve your code quality with our intelligent review system.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="/index/signup/signup.html" class="hero-btn primary">Get Started</a>
+                        <a href="/index/landingDashboard/LearnMore.html" class="hero-btn secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <div class="features-header">
+                    <h2 class="features-title">Powerful Code Analysis Features</h2>
+                    <p class="features-subtitle">
+                        Our system provides comprehensive static code analysis with detailed reports and actionable insights
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <h3 class="feature-title">Code Snippet Analysis</h3>
+                        <p class="feature-description">
+                            Quickly analyze small Java code snippets for best practices, potential bugs, and optimization opportunities.
+                        </p>
+                        <a href="/index/Codesubmission/Codesubmission.html" class="feature-btn">Submit Snippet</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📄</div>
+                        <h3 class="feature-title">File Upload & Review</h3>
+                        <p class="feature-description">
+                            Upload complete Java files for comprehensive analysis including complexity metrics and code quality assessment.
+                        </p>
+                        <a href="/index/Codesubmission/Codesubmission.html" class="feature-btn">Upload File</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📁</div>
+                        <h3 class="feature-title">Project Analysis</h3>
+                        <p class="feature-description">
+                            Submit entire ZIP projects for full-scale analysis across multiple files and packages with detailed reporting.
+                        </p>
+                        <a href="/index/Codesubmission/Codesubmission.html" class="feature-btn">Upload Project</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">PMD Integration</h3>
+                        <p class="feature-description">
+                            Powered by PMD static analysis tool for accurate detection of common programming flaws and code smells.
+                        </p>
+                        <a href="https://pmd.github.io/" class="feature-btn">Learn More</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Detailed Reports</h3>
+                        <p class="feature-description">
+                            Get comprehensive reports with severity levels, line numbers, and specific recommendations for improvement.
+                        </p>
+                        <a href="/index/Codesubmission/Codesubmission.html" class="feature-btn">View Reports</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3 class="feature-title">Expert Reviews</h3>
+                        <p class="feature-description">
+                            Professional reviewers analyze your code and provide personalized feedback and improvement suggestions.
+                        </p>
+                        <a href="/index/CodeReview/CodeReview.html" class="feature-btn">Tester Panel</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="services">
+            <div class="container">
+                <div class="services-header">
+                    <h2 class="services-title">Quick Access Services</h2>
+                    <p class="services-subtitle">
+                        Jump directly to the service you need
+                    </p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🔐</div>
+                        <h3 class="service-title">User Login</h3>
+                        <p class="service-description">Access your account and manage your code submissions</p>
+                        <a href="/index/sign_in/sign_in.html" class="service-link">Login →</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">✨</div>
+                        <h3 class="service-title">New User Registration</h3>
+                        <p class="service-description">Create an account to start using our code review services</p>
+                        <a href="/index/signup/signup.html" class="service-link">Sign Up →</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📤</div>
+                        <h3 class="service-title">Submit Code</h3>
+                        <p class="service-description">Upload snippets, files, or projects for analysis</p>
+                        <a href="/index/Codesubmission/Codesubmission.html" class="service-link">Submit →</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📋</div>
+                        <h3 class="service-title">Admin Dashboard</h3>
+                        <p class="service-description">View Admin Services and OnBoard the Users</p>
+                        <a href="/index/userDetails/userDetails.html" class="service-link">Admin Panel →</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🧪</div>
+                        <h3 class="service-title">Tester Dashboard</h3>
+                        <p class="service-description">Review and analyze submitted code (for testers)</p>
+                        <a href="/index//CodeReview/CodeReview.html" class="service-link">Tester Panel →</a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📞</div>
+                        <h3 class="service-title">Support</h3>
+                        <p class="service-description">Get help and contact our support team</p>
+                        <a href="/index/landingDashboard/contact.html" class="service-link">Contact →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    © 2025 Automated Code Review System. Built with Java Spring Boot.
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">GitHub Repository</a>
+                    <a href="/index/landingDashboard/contact.html" class="footer-link">Contact</a>
+                    <a href="/index/landingDashboard/privacyPolicy.html" class="footer-link">Privacy Policy</a>
+                    <a href="/index/landingDashboard/TermsOfService.html" class="footer-link">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards for animation
+        document.querySelectorAll('.feature-card, .service-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Add loading animation to buttons
+        document.querySelectorAll('.hero-btn, .feature-btn, .service-link, .nav-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Add a subtle loading effect
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

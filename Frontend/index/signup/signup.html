@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeReview App - Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation" id="bgAnimation"></div>
+    
+    <div class="signup-container">
+        <div class="logo-section">
+            <div class="logo"></div>
+            <h1 class="title">Join CodeReview</h1>
+            <p class="subtitle">Create your account to start reviewing code like a pro</p>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-alert" id="errorAlert"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label class="form-label" for="name">Full Name</label>
+                <input type="text" id="name" name="name" class="form-input" required>
+                <div class="error-message" id="nameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <div class="role-selector">
+                    <div class="role-option">
+                        <input type="radio" id="developer" name="role" value="DEVELOPER" required>
+                        <label for="developer" class="role-label">Developer</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="reviewer" name="role" value="TESTER" required>
+                        <label for="reviewer" class="role-label">Reviewer</label>
+                    </div>
+                </div>
+                <div class="error-message" id="roleError"></div>
+            </div>
+
+            <button type="submit" class="signup-btn" id="signupBtn">
+                <span id="btnText">Create Account</span>
+                <div class="btn-loading" id="btnLoading">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="http://127.0.0.1:5501/index/sign_in/sign_in.html">Sign in here</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

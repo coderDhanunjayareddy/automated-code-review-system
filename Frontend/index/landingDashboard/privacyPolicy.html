@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Automated Code Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-code {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: float 20s infinite linear;
+            user-select: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        .header {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .privacy-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s ease-out 0.2s forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 20px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            transform: scale(0);
+            animation: scaleIn 0.6s ease-out 0.4s forwards;
+        }
+
+        @keyframes scaleIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .logo::before {
+            content: '</>';
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .effective-date {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0c4a6e;
+            font-weight: 600;
+        }
+
+        .policy-content {
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        .section-card {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #6366f1;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .section-content p {
+            margin-bottom: 12px;
+        }
+
+        .section-content ul {
+            margin: 16px 0;
+            padding-left: 20px;
+        }
+
+        .section-content li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .section-content li::marker {
+            color: #6366f1;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box h4 {
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .highlight-box p {
+            color: #a16207;
+            margin: 0;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
+            border: 1px solid #0ea5e9;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .contact-section h3 {
+            color: #0c4a6e;
+            margin-bottom: 12px;
+        }
+
+        .contact-section p {
+            color: #075985;
+            margin-bottom: 16px;
+        }
+
+        .contact-link {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: #0284c7;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 30px;
+        }
+
+        .last-updated {
+            font-style: italic;
+            color: #6b7280;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .privacy-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .section-card {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <!-- Floating code elements -->
+        <div class="floating-code" style="left: 10%; animation-delay: 0s;">const privacy = {</div>
+        <div class="floating-code" style="left: 80%; animation-delay: 5s;">secure: true,</div>
+        <div class="floating-code" style="left: 60%; animation-delay: 10s;">encrypted: true</div>
+        <div class="floating-code" style="left: 30%; animation-delay: 15s;">};</div>
+        <div class="floating-code" style="left: 70%; animation-delay: 3s;">user.data.protect()</div>
+        <div class="floating-code" style="left: 20%; animation-delay: 8s;">await encrypt(data)</div>
+        <div class="floating-code" style="left: 90%; animation-delay: 12s;">GDPR.compliant</div>
+        <div class="floating-code" style="left: 5%; animation-delay: 18s;">delete user.data</div>
+    </div>
+
+    <div class="header">
+        <a href="/index/landingDashboard/index.html" class="back-btn">
+            ← Back to Home
+        </a>
+    </div>
+
+    <div class="privacy-container">
+        <div class="logo-section">
+            <div class="logo"></div>
+            <h1 class="title">Privacy Policy</h1>
+            <p class="subtitle">Your privacy is important to us</p>
+        </div>
+
+        <div class="effective-date">
+            <strong>Effective Date: June 24, 2025</strong>
+        </div>
+
+        <div class="last-updated">
+            Last Updated: June 24, 2025
+        </div>
+
+        <div class="policy-content">
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">1</span>
+                    Introduction
+                </h2>
+                <div class="section-content">
+                    <p>Welcome to the Automated Code Review System ("we", "our", or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our automated code review platform and related services.</p>
+                    <p>By using our service, you agree to the collection and use of information in accordance with this policy. We are committed to protecting your privacy and ensuring the security of your personal information.</p>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">2</span>
+                    Information We Collect
+                </h2>
+                <div class="section-content">
+                    <p>We collect several types of information to provide and improve our service:</p>
+                    
+                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1f2937;">Personal Information:</h4>
+                    <ul>
+                        <li><strong>Name:</strong> Used for account identification and personalization</li>
+                        <li><strong>Email Address:</strong> For authentication, notifications, and communication</li>
+                        <li><strong>Profile Information:</strong> Optional details you provide to enhance your experience</li>
+                    </ul>
+
+                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1f2937;">Code and Technical Data:</h4>
+                    <ul>
+                        <li><strong>Code Submissions:</strong> Source code files you upload for review</li>
+                        <li><strong>Review Results:</strong> Analysis reports, suggestions, and feedback generated</li>
+                        <li><strong>Usage Analytics:</strong> How you interact with our platform (anonymized)</li>
+                        <li><strong>Technical Logs:</strong> System performance and error logs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">3</span>
+                    How We Use Your Information
+                </h2>
+                <div class="section-content">
+                    <p>We use the collected information for the following purposes:</p>
+                    <ul>
+                        <li><strong>Code Review Services:</strong> Analyzing your code submissions and providing automated feedback</li>
+                        <li><strong>Authentication:</strong> Verifying your identity and managing your account</li>
+                        <li><strong>Service Improvement:</strong> Enhancing our algorithms and platform features</li>
+                        <li><strong>Communication:</strong> Sending important updates, notifications, and support responses</li>
+                        <li><strong>Security:</strong> Protecting against unauthorized access and maintaining system integrity</li>
+                        <li><strong>Compliance:</strong> Meeting legal obligations and regulatory requirements</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>No Third-Party Sharing</h4>
+                <p>We do not sell, trade, or share your personal information or code submissions with third parties. Your data stays secure within our system and is never disclosed to external entities without your explicit consent.</p>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">4</span>
+                    Data Retention
+                </h2>
+                <div class="section-content">
+                    <p>We retain your information for different periods based on the type of data:</p>
+                    <ul>
+                        <li><strong>Account Information:</strong> Retained while your account is active and for 2 years after deletion</li>
+                        <li><strong>Code Submissions:</strong> Stored for 1 year to provide review history and improve services</li>
+                        <li><strong>Review Results:</strong> Kept for 2 years to maintain your project history</li>
+                        <li><strong>System Logs:</strong> Automatically deleted after 90 days</li>
+                        <li><strong>Analytics Data:</strong> Anonymized data may be retained indefinitely for service improvement</li>
+                    </ul>
+                    <p>You can request earlier deletion of your data by contacting our support team.</p>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">5</span>
+                    Your Rights and Controls
+                </h2>
+                <div class="section-content">
+                    <p>You have several rights regarding your personal information:</p>
+                    <ul>
+                        <li><strong>Access:</strong> Request a copy of your personal data we hold</li>
+                        <li><strong>Rectification:</strong> Correct any inaccurate or incomplete information</li>
+                        <li><strong>Deletion:</strong> Request removal of your personal data ("Right to be Forgotten")</li>
+                        <li><strong>Data Portability:</strong> Export your data in a structured, machine-readable format</li>
+                        <li><strong>Restriction:</strong> Limit how we process your information</li>
+                        <li><strong>Objection:</strong> Object to certain types of processing</li>
+                        <li><strong>Withdraw Consent:</strong> Revoke previously given consent at any time</li>
+                    </ul>
+                    <p>To exercise any of these rights, please contact us using the information provided below.</p>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">6</span>
+                    Data Security and Storage
+                </h2>
+                <div class="section-content">
+                    <p>We implement comprehensive security measures to protect your information:</p>
+                    <ul>
+                        <li><strong>Encryption:</strong> All data is encrypted in transit (TLS 1.3) and at rest (AES-256)</li>
+                        <li><strong>Access Controls:</strong> Strict authentication and authorization protocols</li>
+                        <li><strong>Secure Infrastructure:</strong> Industry-standard cloud security with regular audits</li>
+                        <li><strong>Employee Training:</strong> Regular security awareness training for all staff</li>
+                        <li><strong>Incident Response:</strong> Dedicated team for security incident management</li>
+                        <li><strong>Regular Backups:</strong> Secure, encrypted backups with disaster recovery procedures</li>
+                    </ul>
+                    <p>Despite our best efforts, no method of transmission over the internet is 100% secure. We strive to use commercially acceptable means to protect your data.</p>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">7</span>
+                    Cookies and Local Storage
+                </h2>
+                <div class="section-content">
+                    <p>Our service uses cookies and similar technologies to enhance your experience:</p>
+                    
+                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1f2937;">Essential Cookies:</h4>
+                    <ul>
+                        <li>Authentication tokens for secure login sessions</li>
+                        <li>User preferences and settings</li>
+                        <li>Security features and fraud prevention</li>
+                    </ul>
+
+                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1f2937;">Analytics Cookies:</h4>
+                    <ul>
+                        <li>Anonymous usage statistics to improve our service</li>
+                        <li>Performance monitoring and error tracking</li>
+                    </ul>
+
+                    <p><strong>Note:</strong> Our web application may use browser localStorage for temporary data storage. This data never contains sensitive information and is automatically cleared when you log out.</p>
+                    <p>You can control cookies through your browser settings, though disabling certain cookies may affect functionality.</p>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">8</span>
+                    Changes to This Policy
+                </h2>
+                <div class="section-content">
+                    <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. When we make changes:</p>
+                    <ul>
+                        <li>We will update the "Effective Date" at the top of this policy</li>
+                        <li>We will notify you via email for significant changes</li>
+                        <li>We will provide notice through our platform interface</li>
+                        <li>Continued use of our service constitutes acceptance of the updated policy</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="contact-section">
+                <h3>Questions About This Policy?</h3>
+                <p>If you have any questions about this Privacy Policy or our data practices, please don't hesitate to contact us:</p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:privacy@codereviewapp.com" class="contact-link">privacy@codereviewapp.com</a><br>
+                    <strong>Support:</strong> <a href="mailto:support@codereviewapp.com" class="contact-link">support@codereviewapp.com</a><br>
+                    <strong>Address:</strong> Hyderabad, India
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Automated Code Review System. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Add floating animations with privacy-related code snippets
+        function createFloatingElements() {
+            const codes = [
+                'encrypt(userData)',
+                'const secure = true;',
+                'GDPR.compliant = true',
+                'user.consent.given',
+                'delete user.data',
+                'await hashPassword()',
+                'privacy.protected',
+                'secure.transmission()'
+            ];
+            
+            codes.forEach((code, i) => {
+                setTimeout(() => {
+                    const element = document.createElement('div');
+                    element.className = 'floating-code';
+                    element.textContent = code;
+                    element.style.left = Math.random() * 80 + '%';
+                    element.style.animationDelay = Math.random() * 20 + 's';
+                    document.querySelector('.background-animation').appendChild(element);
+                    
+                    // Remove element after animation
+                    setTimeout(() => {
+                        element.remove();
+                    }, 20000);
+                }, i * 2500);
+            });
+        }
+
+        // Start floating animations
+        createFloatingElements();
+        
+        // Recreate floating elements periodically
+        setInterval(createFloatingElements, 50000);
+
+        // Smooth scrolling for internal links (if any are added)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add any initialization code here
+            console.log('Privacy Policy page loaded');
+        });
+    </script>
+</body>
+</html>

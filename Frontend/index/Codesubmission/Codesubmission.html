@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Review - Submit Code</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-animation" id="backgroundAnimation"></div>
+    <a href="/index/landingDashboard/index.html" class="home-button" title="Go to Home">🏠</a>
+    <div class="header">
+        <div class="logo"></div>
+        <h1 class="page-title">Code Review System</h1>
+        <p class="page-subtitle">Submit, manage, and review your code</p>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('submit')">Submit Code</button>
+        <button class="nav-tab" onclick="switchTab('manage')">Manage Submissions</button>
+    </div>
+
+    <!-- Submit Code Tab -->
+    <div id="submitTab" class="tab-content active">
+        <div class="submission-container">
+            <!-- Text/Code Submission -->
+            <div class="submission-card text-submission">
+                <div class="card-icon">💻</div>
+                <h2 class="card-title">Paste Code</h2>
+                <p class="card-description">Directly paste your code for instant review</p>
+
+                <form id="textSubmissionForm">
+                    <div class="success-message" id="textSuccess"></div>
+                    <div class="error-message" id="textError"></div>
+
+                    <div class="form-group">
+                        <label class="form-label">Programming Language</label>
+                        (Currently it supports java & Apex)
+                        <div class="language-grid">
+                            <div class="language-option">
+                                <input type="radio" id="java-text" name="textLanguage" value="Java" checked>
+                                <label for="java-text" class="language-label">Java</label>
+                            </div>
+                            <div class="language-option">
+                                <input type="radio" id="python-text" name="textLanguage" value="Python">
+                                <label for="python-text" class="language-label">Python</label>
+                            </div>
+                            <div class="language-option">
+                                <input type="radio" id="javascript-text" name="textLanguage" value="JavaScript">
+                                <label for="javascript-text" class="language-label">JavaScript</label>
+                            </div>
+                            <div class="language-option">
+                                <input type="radio" id="cpp-text" name="textLanguage" value="C++">
+                                <label for="cpp-text" class="language-label">C++</label>
+                            </div>
+                            <div class="language-option">
+                                <input type="radio" id="csharp-text" name="textLanguage" value="C#">
+                                <label for="csharp-text" class="language-label">C#</label>
+                            </div>
+                            <div class="language-option">
+                                <input type="radio" id="other-text" name="textLanguage" value="Other">
+                                <label for="other-text" class="language-label">Other</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codeTextarea" class="form-label">Your Code</label>
+                        <textarea id="codeTextarea" class="form-input code-textarea"
+                            placeholder="Paste your code here..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="textSubmitBtn">
+                        <span class="btn-text">Submit Code</span>
+                        <div class="btn-loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+
+            <!-- File Upload Submission -->
+            <div class="submission-card file-submission">
+                <div class="card-icon">📄</div>
+                <h2 class="card-title">Upload File</h2>
+                <p class="card-description">Upload a single code file for review</p>
+
+                <form id="fileSubmissionForm">
+                    <div class="success-message" id="fileSuccess"></div>
+                    <div class="error-message" id="fileError"></div>
+
+                    <div class="form-group">
+                        <label class="form-label">Programming Language</label>
+                        (Currently it supports java & Apex)
+                        <select id="fileLanguage" class="form-select">
+                            <option value="Java">Java</option>
+                            <option value="Python">Python</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="C++">C++</option>
+                            <option value="C#">C#</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Code File</label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">Click to browse or drag & drop</div>
+                            <div class="file-upload-subtext">Supports .java, .py, .js, .cpp, .cs and more</div>
+                        </div>
+                        <input type="file" id="fileInput" class="file-input"
+                            accept=".java,.py,.js,.cpp,.cs,.c,.h,.hpp,.txt">
+                        <div class="selected-file" id="selectedFile">
+                            <span class="file-icon">📄</span>
+                            <div class="file-info">
+                                <div class="file-name" id="fileName"></div>
+                                <div class="file-size" id="fileSize"></div>
+                            </div>
+                            <button type="button" class="remove-file" id="removeFile">×</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="fileSubmitBtn" disabled>
+                        <span class="btn-text">Upload File</span>
+                        <div class="btn-loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+
+            <!-- ZIP Upload Submission -->
+            <div class="submission-card zip-submission" style="grid-column: 1 / -1;">
+                <div class="card-icon">🗜️</div>
+                <h2 class="card-title">Upload Project (ZIP)</h2>
+                <p class="card-description">Upload a complete project as a ZIP file for comprehensive review</p>
+
+                <form id="zipSubmissionForm">
+                    <div class="success-message" id="zipSuccess"></div>
+                    <div class="error-message" id="zipError"></div>
+
+                    <div class="form-group">
+                        <label class="form-label">Project ZIP File</label>
+                        (Currently it supports java & Apex)
+                        <div class="file-upload-area" id="zipUploadArea">
+                            <div class="file-upload-icon">📦</div>
+                            <div class="file-upload-text">Click to browse or drag & drop your ZIP file</div>
+                            <div class="file-upload-subtext">Maximum file size: 50MB</div>
+                        </div>
+                        <input type="file" id="zipInput" class="file-input" accept=".zip">
+                        <div class="selected-file" id="selectedZip">
+                            <span class="file-icon">📦</span>
+                            <div class="file-info">
+                                <div class="file-name" id="zipName"></div>
+                                <div class="file-size" id="zipSize"></div>
+                            </div>
+                            <button type="button" class="remove-file" id="removeZip">×</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="zipSubmitBtn" disabled>
+                        <span class="btn-text">Upload Project</span>
+                        <div class="btn-loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Submissions Tab -->
+    <div id="manageTab" class="tab-content">
+        <div class="management-container">
+            <div class="management-card">
+                <div class="card-icon">📋</div>
+                <h2 class="card-title">Manage Submissions</h2>
+                <p class="card-description">View, delete, and review your code submissions</p>
+
+                <div class="success-message" id="manageSuccess"></div>
+                <div class="error-message" id="manageError"></div>
+
+                <div class="form-group">
+                    <button class="action-btn" onclick="loadAllSubmissions()">
+                        <span class="btn-text">Load All Submissions</span>
+                        <div class="btn-loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Get Submission by ID</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="submissionIdInput" class="form-input" placeholder="Enter submission ID"
+                            style="flex: 1;">
+                        <button class="action-btn" onclick="getSubmissionById()"
+                            style="width: auto; padding: 18px 24px;">
+                            <span class="btn-text">Get</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Get Review by ID</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="reviewIdInput" class="form-input" placeholder="Enter review ID"
+                            style="flex: 1;">
+                        <button class="action-btn" onclick="getReviewById()" style="width: auto; padding: 18px 24px;">
+                            <span class="btn-text">Get Review</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="submissions-list" id="submissionsList">
+                    <div style="padding: 20px; text-align: center; color: #6b7280;">
+                        Click "Load All Submissions" to view your submissions
+                    </div>
+                </div>
+
+                <div id="submissionDetails" style="display: none;">
+                    <h3 style="margin: 20px 0 10px 0; color: #1f2937;">Submission Details</h3>
+                    <div id="submissionContent"></div>
+                </div>
+
+                <div id="reviewDetails" style="display: none;">
+                    <h3 style="margin: 20px 0 10px 0; color: #1f2937;">Review Details</h3>
+                    <div id="reviewContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/index/tokenManager.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

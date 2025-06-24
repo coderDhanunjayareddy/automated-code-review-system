@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Automated Code Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-code {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: float 20s infinite linear;
+            user-select: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        .header {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .terms-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s ease-out 0.2s forwards;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 600px;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 24px 0 0 24px;
+            padding: 30px 20px;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 16px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .logo::before {
+            content: '</>';
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 16px;
+            color: #4b5563;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .main-content {
+            padding: 40px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .content-header {
+            margin-bottom: 30px;
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .main-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .effective-date {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            color: #0c4a6e;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .terms-content {
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            scroll-margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-number {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 24px 0 12px 0;
+            position: relative;
+            padding-left: 16px;
+        }
+
+        h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        li::marker {
+            color: #6366f1;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box h4 {
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .highlight-box p {
+            color: #a16207;
+            margin: 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #991b1b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .warning-box p {
+            color: #b91c1c;
+            margin: 0;
+        }
+
+        .role-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            border-left: 4px solid #6366f1;
+        }
+
+        .role-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .role-description {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
+            border: 1px solid #0ea5e9;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .contact-section h3 {
+            color: #0c4a6e;
+            margin-bottom: 12px;
+            padding-left: 0;
+        }
+
+        .contact-section h3::before {
+            display: none;
+        }
+
+        .contact-section p {
+            color: #075985;
+            margin-bottom: 16px;
+        }
+
+        .contact-link {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: #0284c7;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .terms-container {
+                grid-template-columns: 1fr;
+                margin: 10px;
+            }
+
+            .sidebar {
+                border-radius: 24px 24px 0 0;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 20px;
+            }
+
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 8px;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+                white-space: nowrap;
+            }
+
+            .main-content {
+                padding: 30px 20px;
+                max-height: none;
+            }
+        }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: block;
+                position: sticky;
+                top: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 16px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                z-index: 10;
+            }
+
+            .mobile-nav select {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 14px;
+                background: white;
+                outline: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-animation">
+        <!-- Floating code elements -->
+        <div class="floating-code" style="left: 10%; animation-delay: 0s;">terms.accepted = true</div>
+        <div class="floating-code" style="left: 80%; animation-delay: 5s;">user.agrees(terms)</div>
+        <div class="floating-code" style="left: 60%; animation-delay: 10s;">service.legal = true</div>
+        <div class="floating-code" style="left: 30%; animation-delay: 15s;">liability.limited()</div>
+        <div class="floating-code" style="left: 70%; animation-delay: 3s;">jurisdiction: 'India'</div>
+        <div class="floating-code" style="left: 20%; animation-delay: 8s;">terms.modified()</div>
+        <div class="floating-code" style="left: 90%; animation-delay: 12s;">user.responsibilities</div>
+        <div class="floating-code" style="left: 5%; animation-delay: 18s;">service.description</div>
+    </div>
+
+    <div class="header">
+        <a href="/index/landingDashboard/index.html" class="back-btn">
+            ← Back to Home
+        </a>
+    </div>
+
+    <div class="terms-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"></div>
+                <div class="sidebar-title">Terms of Service</div>
+                <div class="sidebar-subtitle">Legal Agreement</div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#acceptance" class="nav-link">Acceptance</a></li>
+                    <li class="nav-item"><a href="#services" class="nav-link">Services</a></li>
+                    <li class="nav-item"><a href="#responsibilities" class="nav-link">Responsibilities</a></li>
+                    <li class="nav-item"><a href="#data" class="nav-link">Data Use</a></li>
+                    <li class="nav-item"><a href="#roles" class="nav-link">User Roles</a></li>
+                    <li class="nav-item"><a href="#liability" class="nav-link">Liability</a></li>
+                    <li class="nav-item"><a href="#modifications" class="nav-link">Modifications</a></li>
+                    <li class="nav-item"><a href="#law" class="nav-link">Governing Law</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div class="mobile-nav">
+                <select onchange="scrollToSection(this.value)">
+                    <option value="">Navigate to Section</option>
+                    <option value="acceptance">Acceptance of Terms</option>
+                    <option value="services">Description of Services</option>
+                    <option value="responsibilities">User Responsibilities</option>
+                    <option value="data">Data Use and Storage</option>
+                    <option value="roles">Role-based Access</option>
+                    <option value="liability">Limitations of Liability</option>
+                    <option value="modifications">Modification of Terms</option>
+                    <option value="law">Governing Law</option>
+                </select>
+            </div>
+
+            <div class="content-header">
+                <h1 class="main-title">Terms of Service</h1>
+                <p class="main-subtitle">Legal agreement for the Automated Code Review System</p>
+                <div class="effective-date">
+                    <strong>Effective Date: June 24, 2025</strong>
+                </div>
+            </div>
+
+            <div class="terms-content">
+                <section id="acceptance" class="section">
+                    <h2><span class="section-number">1</span>Acceptance of Terms</h2>
+                    <p>By accessing and using the Automated Code Review System ("Service"), you accept and agree to be
+                        bound by the terms and provision of this agreement. If you do not agree to abide by the above,
+                        please do not use this service.</p>
+
+                    <h3>Agreement to Terms</h3>
+                    <p>These Terms of Service ("Terms") govern your use of our automated code review platform operated
+                        by Automated Code Review System ("we", "us", or "our"). Your access to and use of the Service is
+                        conditioned on your acceptance of and compliance with these Terms.</p>
+
+                    <h3>Legal Capacity</h3>
+                    <p>By using our Service, you represent and warrant that:</p>
+                    <ul>
+                        <li>You are at least 18 years old or have reached the age of majority in your jurisdiction</li>
+                        <li>You have the legal capacity to enter into these Terms</li>
+                        <li>Your use of the Service will not violate any applicable law or regulation</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <h4>Important Notice</h4>
+                        <p>If you disagree with any part of these terms, then you may not access the Service.</p>
+                    </div>
+                </section>
+
+                <section id="services" class="section">
+                    <h2><span class="section-number">2</span>Description of Services</h2>
+                    <p>The Automated Code Review System provides automated analysis and review of source code
+                        submissions through our web-based platform.</p>
+
+                    <h3>Core Services</h3>
+                    <p>Our Service includes but is not limited to:</p>
+                    <ul>
+                        <li><strong>User Authentication:</strong> Secure login and account management system</li>
+                        <li><strong>Code Upload:</strong> Ability to submit source code files for automated review</li>
+                        <li><strong>Automated Analysis:</strong> AI-powered code review including syntax checking,
+                            security analysis, and best practice recommendations</li>
+                        <li><strong>Review Reports:</strong> Detailed reports with suggestions for code improvement</li>
+                        <li><strong>Dashboard:</strong> User interface to manage submissions and view results</li>
+                        <li><strong>History Tracking:</strong> Maintain records of previous reviews and improvements
+                        </li>
+                    </ul>
+
+                    <h3>Service Availability</h3>
+                    <p>We strive to maintain high availability of our Service, but we do not guarantee uninterrupted
+                        access. The Service may be temporarily unavailable due to:</p>
+                    <ul>
+                        <li>Scheduled maintenance and updates</li>
+                        <li>Technical difficulties or system failures</li>
+                        <li>Circumstances beyond our reasonable control</li>
+                    </ul>
+
+                    <h3>Service Limitations</h3>
+                    <p>Please note that our automated review system:</p>
+                    <ul>
+                        <li>Provides suggestions and recommendations, not definitive solutions</li>
+                        <li>May not catch all potential issues in code submissions</li>
+                        <li>Should not replace human code review and testing</li>
+                        <li>Has file size and submission limits as specified in your account</li>
+                    </ul>
+                </section>
+
+                <section id="responsibilities" class="section">
+                    <h2><span class="section-number">3</span>User Responsibilities</h2>
+                    <p>As a user of our Service, you have certain responsibilities and obligations.</p>
+
+                    <h3>Code Authenticity</h3>
+                    <p>You are responsible for ensuring that all code submissions are:</p>
+                    <ul>
+                        <li><strong>Authentic:</strong> You must own or have proper authorization to submit the code
+                        </li>
+                        <li><strong>Legal:</strong> Code must not infringe on intellectual property rights of others
+                        </li>
+                        <li><strong>Original:</strong> You must not submit code that violates copyright or licensing
+                            agreements</li>
+                    </ul>
+
+                    <h3>Prohibited Content</h3>
+                    <p>You agree not to upload or submit:</p>
+                    <ul>
+                        <li><strong>Malicious Code:</strong> Viruses, malware, trojans, or any harmful software</li>
+                        <li><strong>Illegal Content:</strong> Code that facilitates illegal activities</li>
+                        <li><strong>Harmful Scripts:</strong> Code designed to damage systems or steal data</li>
+                        <li><strong>Spam or Junk:</strong> Irrelevant or repetitive submissions</li>
+                        <li><strong>Copyrighted Material:</strong> Code you don't have rights to use</li>
+                    </ul>
+
+                    <h3>Account Security</h3>
+                    <p>You are responsible for:</p>
+                    <ul>
+                        <li>Maintaining the confidentiality of your account credentials</li>
+                        <li>All activities that occur under your account</li>
+                        <li>Notifying us immediately of any unauthorized use</li>
+                        <li>Using strong, unique passwords</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h4>Violation Consequences</h4>
+                        <p>Violation of these responsibilities may result in suspension or termination of your account,
+                            legal action, and/or reporting to relevant authorities.</p>
+                    </div>
+                </section>
+
+                <section id="data" class="section">
+                    <h2><span class="section-number">4</span>Data Use and Storage</h2>
+                    <p>This section outlines how we handle your data and code submissions.</p>
+
+                    <h3>Data Collection</h3>
+                    <p>We collect and process the following information:</p>
+                    <ul>
+                        <li><strong>Account Information:</strong> Name, email address, and profile details</li>
+                        <li><strong>Code Submissions:</strong> Source code files you upload for review</li>
+                        <li><strong>Usage Data:</strong> How you interact with our platform</li>
+                        <li><strong>Technical Data:</strong> IP addresses, browser information, and system logs</li>
+                    </ul>
+
+                    <h3>Data Usage</h3>
+                    <p>We use your data to:</p>
+                    <ul>
+                        <li>Provide automated code review services</li>
+                        <li>Improve our algorithms and platform functionality</li>
+                        <li>Authenticate and manage your account</li>
+                        <li>Communicate with you about the Service</li>
+                        <li>Comply with legal obligations</li>
+                    </ul>
+
+                    <h3>Data Storage and Security</h3>
+                    <p>Your data is:</p>
+                    <ul>
+                        <li>Stored securely using industry-standard encryption</li>
+                        <li>Protected by comprehensive security measures</li>
+                        <li>Retained only as long as necessary for service provision</li>
+                        <li>Never sold or shared with third parties without your consent</li>
+                    </ul>
+
+                    <p>For detailed information about our data practices, please refer to our <a href="#"
+                            class="contact-link">Privacy Policy</a>.</p>
+                </section>
+
+                <section id="roles" class="section">
+                    <h2><span class="section-number">5</span>Role-based Access</h2>
+                    <p>Our Service operates with different user roles, each with specific permissions and
+                        responsibilities.</p>
+
+                    <div class="role-card">
+                        <div class="role-title">User Role</div>
+                        <div class="role-description">
+                            Standard users can upload code submissions, view review results, access their submission
+                            history, and manage their account settings. Users have full control over their own data and
+                            submissions.
+                        </div>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-title">Tester Role</div>
+                        <div class="role-description">
+                            Testers have additional privileges including access to beta features, ability to provide
+                            feedback on new functionality, and limited access to system analytics. Testers may also
+                            participate in quality assurance activities.
+                        </div>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-title">Administrator Role</div>
+                        <div class="role-description">
+                            Administrators have full system access including user management, system configuration,
+                            analytics review, and the ability to moderate content. Administrators are responsible for
+                            maintaining system integrity and user safety.
+                        </div>
+                    </div>
+
+                    <h3>Role Assignment</h3>
+                    <p>User roles are assigned based on:</p>
+                    <ul>
+                        <li>Account type and subscription level</li>
+                        <li>Invitation or appointment by existing administrators</li>
+                        <li>Specific agreements for testing or administrative access</li>
+                    </ul>
+
+                    <h3>Role Responsibilities</h3>
+                    <p>All users, regardless of role, must:</p>
+                    <ul>
+                        <li>Comply with these Terms of Service</li>
+                        <li>Respect other users' rights and privacy</li>
+                        <li>Report any security issues or violations</li>
+                        <li>Use their privileges responsibly and ethically</li>
+                    </ul>
+                </section>
+
+                <section id="liability" class="section">
+                    <h2><span class="section-number">6</span>Limitations of Liability</h2>
+                    <p>This section outlines the limits of our liability and your remedies.</p>
+
+                    <h3>Service Disclaimer</h3>
+                    <p>The Service is provided on an "as is" and "as available" basis. We make no warranties, expressed
+                        or implied, and hereby disclaim all other warranties including, without limitation, implied
+                        warranties or conditions of merchantability, fitness for a particular purpose, or
+                        non-infringement of intellectual property.</p>
+
+                    <h3>Limitation of Damages</h3>
+                    <p>In no event shall Automated Code Review System, its directors, employees, or agents be liable for
+                        any indirect, incidental, special, consequential, or punitive damages, including without
+                        limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:
+                    </p>
+                    <ul>
+                        <li>Your use or inability to use the Service</li>
+                        <li>Any unauthorized access to or use of our servers and/or any personal information stored
+                            therein</li>
+                        <li>Any bugs, viruses, trojan horses, or the like that may be transmitted to or through our
+                            Service</li>
+                        <li>Any errors or omissions in any content or for any loss or damage incurred as a result of
+                            your use of any content posted, emailed, transmitted, or otherwise made available through
+                            the Service</li>
+                    </ul>
+
+                    <h3>Maximum Liability</h3>
+                    <p>Our total liability to you for all damages, losses, and causes of action (whether in contract,
+                        tort, or otherwise) shall not exceed the amount you have paid to us in the 12 months preceding
+                        the incident.</p>
+
+                    <h3>Indemnification</h3>
+                    <p>You agree to indemnify and hold harmless Automated Code Review System and its affiliates,
+                        officers, agents, employees, and partners from and against any claims, liabilities, damages,
+                        losses, and expenses, including reasonable attorney's fees, arising out of or in any way
+                        connected with your use of the Service or violation of these Terms.</p>
+
+                    <div class="warning-box">
+                        <h4>Important Legal Notice</h4>
+                        <p>Some jurisdictions do not allow the exclusion of certain warranties or the limitation of
+                            liability for consequential or incidental damages. In such jurisdictions, our liability will
+                            be limited to the maximum extent permitted by law.</p>
+                    </div>
+                </section>
+
+                <section id="modifications" class="section">
+                    <h2><span class="section-number">7</span>Modification of Terms</h2>
+                    <p>We reserve the right to modify these Terms at any time.</p>
+
+                    <h3>Right to Modify</h3>
+                    <p>We may revise these Terms of Service at any time without notice. By using this Service, you are
+                        agreeing to be bound by the then current version of these Terms of Service.</p>
+
+                    <h3>Notification Process</h3>
+                    <p>When we make changes to these Terms, we will:</p>
+                    <ul>
+                        <li>Update the "Effective Date" at the top of this document</li>
+                        <li>Provide notice via email to registered users for material changes</li>
+                        <li>Display a notification on our platform</li>
+                        <li>Maintain a record of previous versions for reference</li>
+                    </ul>
+
+                    <h3>Your Options</h3>
+                    <p>If you do not agree to the modified Terms:</p>
+                    <ul>
+                        <li>You may discontinue use of the Service</li>
+                        <li>You may close your account</li>
+                        <li>Continued use after changes constitutes acceptance</li>
+                    </ul>
+
+                    <h3>Significant Changes</h3>
+                    <p>For significant changes that materially affect your rights, we will provide at least 30 days
+                        advance notice and may require your explicit consent to continue using the Service.</p>
+                </section>
+
+                <section id="law" class="section">
+                    <h2><span class="section-number">8</span>Governing Law</h2>
+                    <p>These Terms and your use of the Service are governed by Indian law.</p>
+
+                    <h3>Jurisdiction</h3>
+                    <p>These Terms of Service and any separate agreements whereby we provide you Services shall be
+                        governed by and construed in accordance with the laws of India, without regard to its conflict
+                        of law provisions.</p>
+
+                    <h3>Dispute Resolution</h3>
+                    <p>Any disputes arising out of or relating to these Terms or the Service shall be resolved through:
+                    </p>
+                    <ul>
+                        <li><strong>Negotiation:</strong> Good faith discussions between the parties</li>
+                        <li><strong>Mediation:</strong> Non-binding mediation if negotiation fails</li>
+                        <li><strong>Arbitration:</strong> Binding arbitration under Indian Arbitration and Conciliation
+                            Act,

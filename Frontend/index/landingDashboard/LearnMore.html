@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Automated Code Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-code {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.08);
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            animation: float 25s infinite linear;
+            user-select: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-icon::before {
+            content: '</>';
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0 80px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            color: white;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.2s forwards;
+        }
+
+        .page-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(40px);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .content-section:nth-child(2) { animation-delay: 0.1s; }
+        .content-section:nth-child(3) { animation-delay: 0.2s; }
+        .content-section:nth-child(4) { animation-delay: 0.3s; }
+        .content-section:nth-child(5) { animation-delay: 0.4s; }
+        .content-section:nth-child(6) { animation-delay: 0.5s; }
+        .content-section:nth-child(7) { animation-delay: 0.6s; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .section-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .section-content {
+            color: #4b5563;
+            line-height: 1.8;
+        }
+
+        .section-content p {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .section-content ul {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        .section-content li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* Feature Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .feature-item {
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 16px;
+            border-left: 4px solid #6366f1;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Tech Stack */
+        .tech-category {
+            margin-bottom: 32px;
+        }
+
+        .tech-category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 4px 8px 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Reference Links */
+        .reference-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .reference-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1f2937;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .reference-link:hover {
+            background: #eef2ff;
+            border-color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        .reference-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .reference-text {
+            flex: 1;
+        }
+
+        .reference-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .reference-url {
+            font-size: 12px;
+            color: #6b7280;
+            word-break: break-all;
+        }
+
+        /* Project Structure */
+        .structure-item {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .structure-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .structure-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .content-section {
+                padding: 24px;
+                margin-bottom: 24px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .section-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .page-subtitle {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="floating-code" style="left: 5%; animation-delay: 0s;">@RestController</div>
+        <div class="floating-code" style="left: 15%; animation-delay: 3s;">@PreAuthorize("hasRole('USER')")</div>
+        <div class="floating-code" style="left: 25%; animation-delay: 6s;">@Entity</div>
+        <div class="floating-code" style="left: 35%; animation-delay: 9s;">@Repository</div>
+        <div class="floating-code" style="left: 45%; animation-delay: 12s;">@Service</div>
+        <div class="floating-code" style="left: 55%; animation-delay: 15s;">@Autowired</div>
+        <div class="floating-code" style="left: 65%; animation-delay: 18s;">@CrossOrigin</div>
+        <div class="floating-code" style="left: 75%; animation-delay: 21s;">@PostMapping</div>
+        <div class="floating-code" style="left: 85%; animation-delay: 24s;">@RequestBody</div>
+        <div class="floating-code" style="left: 95%; animation-delay: 27s;">@JoinColumn</div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo-header">
+                    <div class="logo-icon"></div>
+                    <div class="logo-text">Code Review System</div>
+                </div>
+                <a href="/index/landingDashboard/index.html" class="back-btn">
+                    <span>←</span>
+                    <span>Back to Home</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">About the Project</h1>
+                <p class="page-subtitle">
+                    Learn about the architecture, technologies, and features of our Automated Code Review System
+                </p>
+            </div>
+
+            <!-- Project Overview -->
+            <section class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🎯</div>
+                    <h2 class="section-title">Project Overview</h2>
+                </div>
+                <div class="section-content">
+                    <p><strong>Project Name:</strong> Automated Code Review System</p>
+                    <p><strong>Description:</strong> This is a comprehensive Java Full Stack project designed to streamline the code review process. Users can submit Java code snippets, complete <code>.java</code> files, or entire <code>.zip</code> project folders for automated analysis.</p>
+                    <p>The system leverages PMD (Programming Mistake Detector) for static code analysis, providing detailed review reports that highlight potential issues, code smells, and adherence to coding standards. This helps developers identify problems early and maintain high code quality.</p>
+                    <p><strong>Purpose:</strong> To provide developers with automated code reviews based on industry best practices and coding standards. The system also supports human reviewers (Testers) who can view submissions, run additional analyses, and provide personalized feedback and suggestions.</p>
+                </div>
+            </section>
+
+            <!-- Key Features -->
+            <section class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">⚡</div>
+                    <h2 class="section-title">Key Features</h2>
+                </div>
+                <div class="section-content">
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-title">🔐 Authentication System</div>
+                            <div class="feature-description">Secure login and signup with JWT token-based authentication</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">📝 Code Snippet Submission</div>
+                            <div class="feature-description">Submit small Java code snippets for quick analysis</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">📄 File Upload</div>
+                            <div class="feature-description">Upload complete .java files for comprehensive review</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">📁 Project Analysis</div>
+                            <div class="feature-description">Submit entire ZIP projects for full-scale analysis</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">🔍 PMD Integration</div>
+                            <div class="feature-description">Automated static code analysis using PMD rules</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">💾 Result Storage</div>
+                            <div class="feature-description">Automatic storage of all review results in database</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">👥 Tester Dashboard</div>
+                            <div class="feature-description">Dedicated interface for reviewers to analyze submissions</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">🛡️ Role-Based Access</div>
+                            <div class="feature-description">Spring Security with role-based authorization</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-title">⚙️ Admin Panel</div>
+                            <div class="feature-description">Future enhancement for system administration</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technologies Used -->
+            <section class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🛠️</div>
+                    <h2 class="section-title">Technologies Used</h2>
+                </div>
+                <div class="section-content">
+                    <div class="tech-category">
+                        <div class="tech-category-title">
+                            <span>⚙️</span>
+                            Backend Technologies
+                        </div>
+                        <div class="tech-badge">Java 17</div>
+                        <div class="tech-badge">Spring Boot</div>
+                        <div class="tech-badge">Spring MVC</div>
+                        <div class="tech-badge">Spring Security</div>
+                        <div class="tech-badge">JWT Authentication</div>
+                        <div class="tech-badge">Hibernate (JPA)</div>
+                        <div class="tech-badge">MySQL Database</div>
+                        <div class="tech-badge">PMD Static Analyzer</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">
+                            <span>🎨</span>
+                            Frontend Technologies
+                        </div>
+                        <div class="tech-badge">HTML5</div>
+                        <div class="tech-badge">CSS3</div>
+                        <div class="tech-badge">JavaScript (ES6+)</div>
+                        <div class="tech-badge">Responsive Design</div>
+                        <div class="tech-badge">RESTful API Integration</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools & Libraries -->
+            <section class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🔧</div>
+                    <h2 class="section-title">Tools & External Libraries</h2>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li><strong>PMD:</strong> Core static code analysis engine for detecting programming flaws and code quality issues</li>
+                        <li><strong>Postman:</strong> API testing and documentation tool for backend endpoint validation</li>
+                        <li><strong>IntelliJ IDEA / VS Code:</strong> Primary development environments for coding and debugging</li>
+                        <li><strong>Git & GitHub:</strong> Version control system for source code management and collaboration</li>
+                        <li><strong>CORS Configuration:</strong> Globally enabled Cross-Origin Resource Sharing for seamless frontend-backend communication</li>
+                        <li><strong>Maven:</strong> Dependency management and build automation tool</li>
+                        <li><strong>Swagger/OpenAPI:</strong> API documentation and testing interface</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Project Structure -->
+            <section class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🏗️</div>
+                    <h2 class="section-title">Project Architecture</h2>
+                </div>
+                <div class="section-content">
+                    <div class="structure-item">
+                        <div class="structure-title">RESTful API Controllers</div>
+                        <div class="structure-description">Separate controllers for different functionalities: AuthController, SubmissionController, ReviewController, UserController</div>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-title">JWT Token Authentication</div>
+                        <div class="structure-description">Stateless authentication using JSON Web Tokens for secure API access</div>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-title">Role-Based Authorization</div>
+                        <div class="structure-description">Method-level security using @PreAuthorize annotations for fine-grained access control</div>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-title">File Handling System</div>
+                        <div class="structure-description">Robust file upload and processing for .java files and .zip archives</div>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-title">Global CORS Configuration</div>
+                        <div class="structure-description">Cross-origin resource sharing enabled for seamless frontend-backend integration</div>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-title">Database Integration</div>
+                        <div class="structure-description">ReviewResultRepository and other JPA repositories for persistent data storage</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documentation & References -->
+            <section class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">📚</div>
+                    <h2 class="section-title">Documentation & References</h2>
+                </div>
+                <div class="section-content">
+                    <div class="reference-links">
+                        <a href="https://pmd.github.io/latest/" target="_blank" class="reference-link">
+                            <div class="reference-icon">🔍</div>
+                            <div class="reference-text">
+                                <div class="reference-title">PMD Documentation</div>
+                                <div class="reference-url">pmd.github.io/latest/</div>
+                            </div>
+                        </a>
+                        <a href="https://spring.io/projects/spring-boot" target="_blank" class="reference-link">
+                            <div class="reference-icon">🍃</div>
+                            <div class="reference-text">
+                                <div class="reference-title">Spring Boot Docs</div>
+                                <div class="reference-url">spring.io/projects/spring-boot</div>
+                            </div>
+                        </a>
+                        <a href="https://spring.io/projects/spring-security" target="_blank" class="reference-link">
+                            <div class="reference-icon">🔒</div>
+                            <div class="reference-text">
+                                <div class="reference-title">Spring Security Docs</div>
+                                <div class="reference-url">spring.io/projects/spring-security</div>
+                            </div>
+                        </a>
+                        <a href="https://dev.mysql.com/doc/" target="_blank" class="reference-link">
+                            <div class="reference-icon">🐬</div>
+                            <div class="reference-text">
+                                <div class="reference-title">MySQL Documentation</div>
+                                <div class="reference-url">dev.mysql.com/doc/</div>
+                            </div>
+                        </a>
+                        <a href="https://hibernate.org/orm/documentation/" target="_blank" class="reference-link">
+                            <div class="reference-icon">🔧</div>
+                            <div class="reference-text">
+                                <div class="reference-title">Hibernate ORM Docs</div>
+                                <div class="reference-url">hibernate.org/orm/documentation/</div>
+                            </div>
+                        </a>
+                        <a href="#" class="reference-link">
+                            <div class="reference-icon">🐙</div>
+                            <div class="reference-text">
+                                <div class="reference-title">GitHub Repository</div>
+                                <div class="reference-url">View project source code</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+       // Smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all content sections
+        document.querySelectorAll('.content-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add hover effects to tech badges
+        document.querySelectorAll('.tech-badge').forEach(badge => {
+            badge.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.05)';
+            });
+            
+            badge.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click feedback to interactive elements
+        document.querySelectorAll('.reference-link, .back-btn').forEach(element => {
+            element.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

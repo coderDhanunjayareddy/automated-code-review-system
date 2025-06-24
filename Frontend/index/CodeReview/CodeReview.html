@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Review Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-animation" id="backgroundAnimation"></div>
+    <a href="/index/landingDashboard/index.html" class="home-button" title="Go to Home">🏠</a>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo"></div>
+                <div>
+                    <div class="header-title">Code Review Dashboard</div>
+                    <div class="header-subtitle">Automated static analysis & code quality review</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="refreshSubmissions()">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalSubmissions">0</div>
+                <div class="stat-label">Total Submissions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="reviewedCount">0</div>
+                <div class="stat-label">Reviewed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="issuesFound">0</div>
+                <div class="stat-label">Issues Found(current submission)</div>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">📋</div>
+                    Code Submissions
+                </div>
+                <div class="submissions-grid" id="submissionsGrid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <p>No submissions found</p>
+                        <small>Load submissions to start reviewing code</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">⚡</div>
+                    Review Actions
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Selected Submission</label>
+                    <input type="text" class="form-input" id="selectedSubmission"
+                        placeholder="Select a submission to review" readonly>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="runReview()" id="runReviewBtn" disabled
+                        style="width: 100%;">
+                        🔍 Run PMD Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card review-results" id="reviewResults" style="display: none;">
+            <div class="card-title">
+                <div class="card-icon">📊</div>
+                Review Results
+                <div style="margin-left: auto;">
+                    <button class="btn btn-secondary" onclick="closeReviewResults()">
+                        ✕ Close
+                    </button>
+                </div>
+            </div>
+            <div class="loading" id="reviewLoading">
+                <div class="spinner"></div>
+                <p>Running PMD analysis...</p>
+                <small>This may take a few moments</small>
+            </div>
+            <div class="review-content" id="reviewContent"></div>
+        </div>
+    </div>
+
+    <script src="/index/tokenManager.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
